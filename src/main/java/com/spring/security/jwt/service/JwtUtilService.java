@@ -14,14 +14,28 @@ import java.util.Date;
 public class JwtUtilService {
     private static final String JWT_SECRET_KEY = "TExBVkVfTVVZX1NFQ1JFVEzE3Zmxu7BSGSJx72BSBXM";
     private static final long JWT_TIME_VALIDITY = 1000 * 60  * 15;
+    private static final long JWT_TIME_REFRESH_VALIDATE = 1000 * 60  * 60 * 24;
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails, String role) {
         var claims = new HashMap<String, Object>();
+        claims.put("role", role);
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TIME_VALIDITY))
+                .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
+                .compact();
+    }
+
+    public String generateRefreshToken(UserDetails userDetails, String role) {
+        var claims = new HashMap<String, Object>();
+        claims.put("role", role);
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + JWT_TIME_REFRESH_VALIDATE))
                 .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
                 .compact();
     }
