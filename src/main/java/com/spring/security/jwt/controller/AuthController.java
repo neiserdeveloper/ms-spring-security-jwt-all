@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.Map;
 
 @Controller
-@CrossOrigin("*")
 @RequestMapping("api/v1/auth")
 public class AuthController {
 
